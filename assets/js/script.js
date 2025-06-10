@@ -61,3 +61,58 @@ const headerActive = function () {
 }
 
 addEventOnElem(window, "scroll", headerActive);
+
+
+
+/**
+ * Contact form functionality
+ */
+
+const contactForm = document.getElementById('contactForm');
+
+if (contactForm) {
+  contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = new FormData(contactForm);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const subject = formData.get('subject');
+    const message = formData.get('message');
+    
+    // Create mailto link
+    const mailtoLink = `mailto:nexorawebdev@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+      `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
+    )}`;
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
+    // Show success message
+    showFormMessage('Thank you for your message! Your email client should open now.', 'success');
+    
+    // Reset form
+    contactForm.reset();
+  });
+}
+
+function showFormMessage(message, type) {
+  // Remove existing messages
+  const existingMessages = document.querySelectorAll('.form-success-message, .form-error-message');
+  existingMessages.forEach(msg => msg.remove());
+  
+  // Create new message element
+  const messageElement = document.createElement('div');
+  messageElement.className = type === 'success' ? 'form-success-message' : 'form-error-message';
+  messageElement.textContent = message;
+  messageElement.style.display = 'block';
+  
+  // Insert message before the form
+  contactForm.parentNode.insertBefore(messageElement, contactForm);
+  
+  // Auto-hide message after 5 seconds
+  setTimeout(() => {
+    messageElement.style.display = 'none';
+  }, 5000);
+}
