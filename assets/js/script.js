@@ -171,21 +171,30 @@ function showFormMessage(message, type) {
  * Mobile menu functionality
  */
 
-const menuBtn = document.querySelector('[data-nav-toggler]');
-const overlay = document.querySelector('[data-overlay]');
-
-const toggleMenu = () => {
-  menuBtn.classList.toggle('active');
-  navbar.classList.toggle('active');
-  overlay.classList.toggle('active');
-  document.body.classList.toggle('nav-active');
+const toggleMenu = function() {
+  const navbar = document.querySelector("[data-navbar]");
+  const overlay = document.querySelector("[data-overlay]");
+  const menuBtn = document.querySelector("[data-nav-toggler]");
+  
+  navbar.classList.toggle("active");
+  overlay.classList.toggle("active");
+  menuBtn.classList.toggle("active");
+  document.body.classList.toggle("nav-active");
+  
+  // Prevent background scrolling when menu is open
+  if (navbar.classList.contains("active")) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
 }
 
-menuBtn.addEventListener('click', toggleMenu);
-overlay.addEventListener('click', toggleMenu);
+// Ensure all click events are properly set
+document.querySelector("[data-nav-toggler]").addEventListener("click", toggleMenu);
+document.querySelector("[data-overlay]").addEventListener("click", toggleMenu);
 
 // Close menu when clicking nav links
-const navLinks = document.querySelectorAll('[data-nav-link]');
+const navLinks = document.querySelectorAll("[data-nav-link]");
 navLinks.forEach(link => {
-  link.addEventListener('click', toggleMenu);
+  link.addEventListener("click", toggleMenu);
 });
