@@ -44,6 +44,54 @@ addEventOnElem(navbarLinks, "click", closeNavbar);
 
 
 /**
+ * Modern dropdown functionality
+ */
+
+const dropdowns = document.querySelectorAll('.modern-dropdown');
+
+dropdowns.forEach(dropdown => {
+  const trigger = dropdown.querySelector('.dropdown-trigger');
+  const menu = dropdown.querySelector('.modern-dropdown-menu');
+  
+  if (trigger && menu) {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Close other dropdowns
+      dropdowns.forEach(otherDropdown => {
+        if (otherDropdown !== dropdown) {
+          otherDropdown.classList.remove('active');
+        }
+      });
+      
+      // Toggle current dropdown
+      dropdown.classList.toggle('active');
+    });
+  }
+});
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.modern-dropdown')) {
+    dropdowns.forEach(dropdown => {
+      dropdown.classList.remove('active');
+    });
+  }
+});
+
+// Close dropdowns on escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    dropdowns.forEach(dropdown => {
+      dropdown.classList.remove('active');
+    });
+  }
+});
+
+
+
+/**
  * header & back top btn show when scroll down to 100px
  */
 
@@ -116,3 +164,28 @@ function showFormMessage(message, type) {
     messageElement.style.display = 'none';
   }, 5000);
 }
+
+
+
+/**
+ * Mobile menu functionality
+ */
+
+const menuBtn = document.querySelector('[data-nav-toggler]');
+const overlay = document.querySelector('[data-overlay]');
+
+const toggleMenu = () => {
+  menuBtn.classList.toggle('active');
+  navbar.classList.toggle('active');
+  overlay.classList.toggle('active');
+  document.body.classList.toggle('nav-active');
+}
+
+menuBtn.addEventListener('click', toggleMenu);
+overlay.addEventListener('click', toggleMenu);
+
+// Close menu when clicking nav links
+const navLinks = document.querySelectorAll('[data-nav-link]');
+navLinks.forEach(link => {
+  link.addEventListener('click', toggleMenu);
+});
