@@ -64,6 +64,64 @@
     <path fill="#00f5d4" class="in-bottom" d="M102,67.1c-9.6-6.1-22-3.1-29.5,2-15.4,10.7-19.6,37.5-7.6,47.8s35.9,3.9,44.5-12.5C115.5,92.6,113.9,74.6,102,67.1Z"/>
   </svg>
 
+  <!-- Glass distortion filter -->
+  <svg style="display: none">
+    <filter
+      id="glass-distortion"
+      x="0%"
+      y="0%"
+      width="100%"
+      height="100%"
+      filterUnits="objectBoundingBox"
+    >
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.01 0.01"
+        numOctaves="1"
+        seed="5"
+        result="turbulence"
+      />
+      <!-- Seeds: 14, 17,  -->
+
+      <feComponentTransfer in="turbulence" result="mapped">
+        <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+        <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+        <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+      </feComponentTransfer>
+
+      <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+
+      <feSpecularLighting
+        in="softMap"
+        surfaceScale="5"
+        specularConstant="1"
+        specularExponent="100"
+        lighting-color="white"
+        result="specLight"
+      >
+        <fePointLight x="-200" y="-200" z="300" />
+      </feSpecularLighting>
+
+      <feComposite
+        in="specLight"
+        operator="arithmetic"
+        k1="0"
+        k2="1"
+        k3="1"
+        k4="0"
+        result="litImage"
+      />
+
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="softMap"
+        scale="150"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      />
+    </filter>
+  </svg>
+
   <!-- 
     - #HEADER
   -->
@@ -71,46 +129,50 @@
   <header class="header" data-header>
     <div class="container">
 
-      <!-- Modern Navigation -->
-      <nav class="modern-navbar" data-navbar>
-        <!-- Add the logo here -->
-        <a href="#" class="nav-logo">Devnexora</a>
-        
-        <ul class="modern-nav-list">
-          <li class="modern-nav-item">
-            <a href="#home" class="modern-nav-link" data-nav-link>Home</a>
-          </li>
+      <!-- Liquid Glass Navigation -->
+      <div class="wrapper">
+        <!-- Logo -->
+        <a href="#" class="nav-logo">
+          <div class="liquidGlass-wrapper logo">
+            <div class="liquidGlass-effect"></div>
+            <div class="liquidGlass-tint"></div>
+            <div class="liquidGlass-shine"></div>
+            <div class="liquidGlass-text">
+              <div>Devnexora</div>
+            </div>
+          </div>
+        </a>
 
-          <li class="modern-nav-item">
-            <a href="#service" class="modern-nav-link" data-nav-link>Services</a>
-          </li>
+        <!-- Menu -->
+        <div class="liquidGlass-wrapper menu">
+          <div class="liquidGlass-effect"></div>
+          <div class="liquidGlass-tint"></div>
+          <div class="liquidGlass-shine"></div>
+          <div class="liquidGlass-text">
+            <div><a href="#home" data-nav-link data-i18n="nav.home">Home</a></div>
+            <div><a href="#service" data-nav-link data-i18n="nav.services">Services</a></div>
+            <div><a href="#project" data-nav-link data-i18n="nav.portfolio">Portfolio</a></div>
+            <div><a href="#feature" data-nav-link data-i18n="nav.features">Features</a></div>
+            <div><a href="#blog" data-nav-link data-i18n="nav.blog">Blog</a></div>
+            <div><a href="#contact" data-nav-link data-i18n="nav.contact">Contact</a></div>
+          </div>
+        </div>
 
-          <li class="modern-nav-item">
-            <a href="#project" class="modern-nav-link" data-nav-link>Portfolio</a>
-          </li>
+        <!-- Language Switcher -->
+        <div class="language-switcher">
+          <button class="lang-btn" data-lang="en" aria-label="Switch to English">
+            <span>EN</span>
+          </button>
+          <button class="lang-btn" data-lang="fr" aria-label="Switch to French">
+            <span>FR</span>
+          </button>
+        </div>
 
-          <li class="modern-nav-item">
-            <a href="#feature" class="modern-nav-link" data-nav-link>Features</a>
-          </li>
 
-          <li class="modern-nav-item">
-            <a href="#blog" class="modern-nav-link" data-nav-link>Blog</a>
-          </li>
-
-          <li class="modern-nav-item">
-            <a href="#contact" class="modern-nav-link" data-nav-link>Contact</a>
-          </li>
-        </ul>
-      </nav>
+      </div>
 
       <!-- Add this overlay div after the nav -->
       <div class="overlay" data-nav-toggler data-overlay></div>
-
-      <!-- CTA Buttons -->
-      <div class="header-cta">
-        <a href="#contact" class="cta-btn cta-btn-secondary">Get Quote</a>
-        <a href="https://wa.me/212676445591" class="cta-btn cta-btn-primary">Let's Talk 👋</a>
-      </div>
 
       <!-- Mobile Menu Button -->
       <button class="mobile-menu-btn" aria-label="open menu" data-nav-toggler>
@@ -138,22 +200,22 @@
 
           <div class="hero-content">
 
-            <h1 class="h1 hero-title">
+            <h1 class="h1 hero-title" data-i18n="hero.title">
               Building Digital <span class="has-before">Product</span>, Brand and Experience
             </h1>
 
-            <p class="hero-text hero-text-box">
+            <p class="hero-text hero-text-box" data-i18n="hero.subtitle">
               At Devnexora we specialize in designing, building, shipping and scaling beautiful, usable products with
               blazing-fast efficiency
             </p>
 
             <div class="wrapper">
-              <a href="https://wa.me/212676445591" class="btn btn-primary has-before has-after">How It Works</a>
+              <a href="https://wa.me/212676445591" class="btn btn-primary has-before has-after" data-i18n="hero.howItWorks">How It Works</a>
 
               <button class="hero-btn" aria-label="Devnexora promo">
                 <ion-icon name="play-outline" aria-hidden="true"></ion-icon>
 
-                <span class="span">Behind the scenes</span>
+                <span class="span" data-i18n="hero.behindScenes">Behind the scenes</span>
               </button>
             </div>
 
@@ -205,10 +267,248 @@
       <section class="section service" id="service" aria-label="service">
         <div class="container">
 
-          <p class="section-subtitle has-before text-center">Our Services</p>
+          <p class="section-subtitle has-before text-center" data-i18n="services.subtitle">Our Services</p>
 
-          <h2 class="h2 section-title text-center">Managing you business with our <span class="has-before">best
+          <h2 class="h2 section-title text-center" data-i18n="services.title">Managing you business with our <span class="has-before">best
               service</span></h2>
+
+          <!-- Pricing Card Component -->
+          <div class="pricing-card-container">
+            <div class="pricing-wrapper">
+              <input id="tab-1" name="slider" type="radio" />
+              <input checked="" id="tab-2" name="slider" type="radio" />
+              <input id="tab-3" name="slider" type="radio" />
+              <header>
+                <label class="tab-1" for="tab-1" data-i18n="services.individuals">Individuals</label>
+                <label class="tab-2" for="tab-2" data-i18n="services.companies">Companies</label>
+                <label class="tab-3" for="tab-3" data-i18n="services.startups">Startups</label>
+                <div class="slider"></div>
+              </header>
+              <div class="card-area">
+                <div class="cards">
+                  <div class="row row-1">
+                    <div class="price-details">
+                      <span class="price">Website</span>
+                      <p>For individual professionals</p>
+                    </div>
+                    <ul class="features">
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Elegant, Personalized portfolio</span>
+                      </li>
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>Showcase Your Work & Services</span>
+                      </li>
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>SEO & Visibility Optimization</span>
+                      </li>
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>Contact & Booking Integration</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="row">
+                    <div class="price-details">
+                      <span class="price">Software</span>
+                      <span class="price-subtitle">Solutions</span>
+                      <p>For business growth</p>
+                    </div>
+                    <ul class="features">
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>Tailored Business Solutions</span>
+                      </li>
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>Admin Dashboards & Analytics</span>
+                      </li>
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>Multi-Device, Secure & Scalable</span>
+                      </li>
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>Seamless Integrations</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="row">
+                    <div class="price-details">
+                      <span class="price">MVP</span>
+                      <p>For startup success</p>
+                    </div>
+                    <ul class="features">
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>Fast MVP Development</span>
+                      </li>
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>Pitch-Ready Product Design</span>
+                      </li>
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>Tech Stack & Architecture Guidance</span>
+                      </li>
+                      <li>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-white text-2xs bg-green-500 rounded-full mr-2 p-1"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline></svg
+                        ><span>Support Beyond Launch</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <button onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Get a Free Quote</button>
+            </div>
+          </div>
 
           <ul class="grid-list">
 
@@ -374,79 +674,87 @@
           <ul class="grid-list">
 
             <li>
-              <div class="project-card">
+              <a href="https://codewithsadee.github.io/dentelo/" class="project-card-link">
+                <div class="project-card">
 
-                <figure class="card-banner img-holder" style="--width: 835; --height: 429;">
-                  <img src="./assets/images/project-1.jpg" width="835" height="429" loading="lazy" alt="Book art design"
-                    class="img-cover">
-                </figure>
+                  <figure class="card-banner img-holder" style="--width: 835; --height: 429;">
+                    <img src="./assets/images/dentolo.png" width="835" height="429" loading="lazy" alt="Dentolo platform"
+                      class="img-cover">
+                  </figure>
 
-                <div class="card-content">
-                  <h3 class="h3">
-                    <a href="https://codewithsadee.github.io/dentelo/" class="card-title">Dentolo platform</a>
-                  </h3>
+                  <div class="card-content">
+                    <h3 class="h3">
+                      <span class="card-title">Dentolo platform</span>
+                    </h3>
 
-                  <a href="#" class="card-tag">Branding & Design</a>
+                    <span class="card-tag">Branding & Design</span>
+                  </div>
+
                 </div>
-
-              </div>
+              </a>
             </li>
 
             <li>
-              <div class="project-card">
+              <a href="https://codewithsadee.github.io/homeverse/" class="project-card-link">
+                <div class="project-card">
 
-                <figure class="card-banner img-holder" style="--width: 416; --height: 429;">
-                  <img src="./assets/images/project-2.jpg" width="416" height="429" loading="lazy" alt="Graphic Design"
+                  <figure class="card-banner img-holder" style="--width: 416; --height: 429;">
+                                      <img src="./assets/images/realesetate.png" width="416" height="429" loading="lazy" alt="Real Estate Agency"
                     class="img-cover">
-                </figure>
+                  </figure>
 
-                <div class="card-content">
-                  <h3 class="h3">
-                    <a href="#" class="card-title">Real estate agency</a>
-                  </h3>
+                  <div class="card-content">
+                    <h3 class="h3">
+                      <span class="card-title">Real estate agency</span>
+                    </h3>
 
-                  <a href="#" class="card-tag">Design and development</a>
+                    <span class="card-tag">Design and development</span>
+                  </div>
+
                 </div>
-
-              </div>
+              </a>
             </li>
 
             <li>
-              <div class="project-card">
+              <a href="https://martyna-winiarska.vercel.app/" class="project-card-link">
+                <div class="project-card">
 
-                <figure class="card-banner img-holder" style="--width: 416; --height: 429;">
-                  <img src="./assets/images/project-3.jpg" width="416" height="429" loading="lazy" alt="3d Digital Art"
-                    class="img-cover">
-                </figure>
+                  <figure class="card-banner img-holder" style="--width: 416; --height: 429;">
+                    <img src="./assets/images/lawyer.png" width="416" height="429" loading="lazy" alt="Lawyer Portfolio"
+                      class="img-cover">
+                  </figure>
 
-                <div class="card-content">
-                  <h3 class="h3">
-                    <a href="https://martyna-winiarska.vercel.app/" class="card-title">Lawyer Portfolio</a>
-                  </h3>
+                  <div class="card-content">
+                    <h3 class="h3">
+                      <span class="card-title">Lawyer Portfolio</span>
+                    </h3>
 
-                  <a href="https://martyna-winiarska.vercel.app/" class="card-tag">Website Design</a>
+                    <span class="card-tag">Website Design</span>
+                  </div>
+
                 </div>
-
-              </div>
+              </a>
             </li>
 
             <li>
-              <div class="project-card">
+              <a href="https://precious-puffpuff-81885e.netlify.app/" class="project-card-link">
+                <div class="project-card">
 
-                <figure class="card-banner img-holder" style="--width: 416; --height: 429;">
-                  <img src="./assets/images/project-4.jpg" width="416" height="429" loading="lazy" alt="Web Design"
-                    class="img-cover">
-                </figure>
+                  <figure class="card-banner img-holder" style="--width: 416; --height: 429;">
+                    <img src="./assets/images/lumen.png" width="416" height="429" loading="lazy" alt="E-commerce"
+                      class="img-cover">
+                  </figure>
 
-                <div class="card-content">
-                  <h3 class="h3">
-                    <a href="https://precious-puffpuff-81885e.netlify.app/" class="card-title">E-commerce</a>
-                  </h3>
+                  <div class="card-content">
+                    <h3 class="h3">
+                      <span class="card-title">E-commerce</span>
+                    </h3>
 
-                  <a href="#" class="card-tag">Design and development</a>
+                    <span class="card-tag">Design and development</span>
+                  </div>
+
                 </div>
-
-              </div>
+              </a>
             </li>
 
             <li>
@@ -491,9 +799,9 @@
 
           <div class="feature-content">
 
-            <p class="section-subtitle has-before">Why Choose us</p>
+            <p class="section-subtitle has-before" data-i18n="features.subtitle">Why Choose us</p>
 
-            <h2 class="h2 section-title">
+            <h2 class="h2 section-title" data-i18n="features.title">
               Specialist in aviding clients of financial <span class="has-before">challenges</span>
             </h2>
 
@@ -573,43 +881,59 @@
       <section class="section contact" id="contact" aria-label="contact">
         <div class="container">
 
-          <p class="section-subtitle has-before text-center">Get In Touch</p>
+          <p class="section-subtitle has-before text-center" data-i18n="contact.subtitle">Get In Touch</p>
 
-          <h2 class="h2 section-title text-center">
+          <h2 class="h2 section-title text-center" data-i18n="contact.title">
             Let's work <span class="has-before">together</span>
           </h2>
 
           <div class="contact-content">
             
             <div class="contact-info">
-              <div class="contact-card">
-                <div class="card-icon" style="--color: 241, 77%, 63%;">
-                  <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
+              <a href="mailto:nexorawebdev@gmail.com" class="contact-card-link">
+                <div class="contact-card">
+                  <div class="card-icon" style="--color: 241, 77%, 63%;">
+                    <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
+                  </div>
+                  <div>
+                    <h3 class="h3 card-title" data-i18n="contact.emailUs">Email Us</h3>
+                    <p class="card-text">nexorawebdev@gmail.com</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 class="h3 card-title">Email Us</h3>
-                  <p class="card-text">nexorawebdev@gmail.com</p>
-                </div>
-              </div>
+              </a>
 
-              <div class="contact-card">
-                <div class="card-icon" style="--color: 152, 89%, 53%;">
-                  <ion-icon name="call-outline" aria-hidden="true"></ion-icon>
+              <a href="https://wa.me/212676445591" class="contact-card-link">
+                <div class="contact-card">
+                  <div class="card-icon" style="--color: 152, 89%, 53%;">
+                    <ion-icon name="logo-whatsapp" aria-hidden="true"></ion-icon>
+                  </div>
+                  <div>
+                    <h3 class="h3 card-title" data-i18n="contact.whatsappUs">WhatsApp Us</h3>
+                    <p class="card-text">+212 676 445 591</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 class="h3 card-title">Call Us</h3>
-                  <p class="card-text">+212 676 445 591</p>
+              </a>
+
+              <a href="tel:+212676445591" class="contact-card-link">
+                <div class="contact-card">
+                  <div class="card-icon" style="--color: 152, 89%, 53%;">
+                    <ion-icon name="call-outline" aria-hidden="true"></ion-icon>
+                  </div>
+                  <div>
+                    <h3 class="h3 card-title" data-i18n="contact.callUs">Call Us</h3>
+                    <p class="card-text">+212 676 445 591</p>
+                  </div>
                 </div>
-              </div>
+              </a>
 
               <div class="contact-card">
                 <div class="card-icon" style="--color: 343, 98%, 60%;">
                   <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
                 </div>
-                <div>
-                  <h3 class="h3 card-title">Visit Us</h3>
-                  <p class="card-text">Morocco, Casablanca</p>
-                </div>
+                                  <div>
+                    <h3 class="h3 card-title" data-i18n="contact.visitUs">Visit Us</h3>
+                    <p class="card-text">Rabat, Morocco</p>
+                  </div>
               </div>
             </div>
 
@@ -631,7 +955,7 @@
               </div>
 
               <button type="submit" class="btn btn-primary has-before has-after">
-                <span class="span">Send Message</span>
+                <span class="span" data-i18n="contact.sendMessage">Send Message</span>
                 <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
               </button>
             </form>
@@ -968,6 +1292,30 @@
 
 
 
+
+  <!-- Fixed CTA Buttons - Bottom Left -->
+  <div class="fixed-cta-buttons">
+    <a href="#contact">
+      <div class="liquidGlass-wrapper button">
+        <div class="liquidGlass-effect"></div>
+        <div class="liquidGlass-tint"></div>
+        <div class="liquidGlass-shine"></div>
+        <div class="liquidGlass-text">
+          <div>Get Quote</div>
+        </div>
+      </div>
+    </a>
+    <a href="https://wa.me/212676445591">
+      <div class="liquidGlass-wrapper button">
+        <div class="liquidGlass-effect"></div>
+        <div class="liquidGlass-tint"></div>
+        <div class="liquidGlass-shine"></div>
+        <div class="liquidGlass-text">
+          <div>Let's Talk 👋</div>
+        </div>
+      </div>
+    </a>
+  </div>
 
   <!-- 
     - #BACK TO TOP

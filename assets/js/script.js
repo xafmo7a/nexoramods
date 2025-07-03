@@ -22,24 +22,45 @@ const addEventOnElem = function (elem, type, callback) {
  * navbar toggle
  */
 
-const navbar = document.querySelector("[data-navbar]");
-const navTogglers = document.querySelectorAll("[data-nav-toggler]");
+const wrapper = document.querySelector(".wrapper");
 const navbarLinks = document.querySelectorAll("[data-nav-link]");
 const overlay = document.querySelector("[data-overlay]");
 
-const toggleNavbar = function () {
-  navbar.classList.toggle("active");
-  overlay.classList.toggle("active");
-}
-
-addEventOnElem(navTogglers, "click", toggleNavbar);
-
 const closeNavbar = function () {
-  navbar.classList.remove("active");
+  wrapper.classList.remove("active");
   overlay.classList.remove("active");
+  const menuBtn = document.querySelector(".mobile-menu-btn");
+  if (menuBtn) menuBtn.classList.remove("active");
+  document.body.style.overflow = "";
 }
 
-addEventOnElem(navbarLinks, "click", closeNavbar);
+// Close navbar on mobile when clicking links
+if (window.innerWidth <= 768) {
+  addEventOnElem(navbarLinks, "click", closeNavbar);
+}
+
+// Handle menu item active states
+const menuItems = document.querySelectorAll(".menu > div > div");
+
+const setActiveMenuItem = function(clickedItem) {
+  // Remove active class from all menu items
+  menuItems.forEach(item => {
+    item.classList.remove("active");
+  });
+  
+  // Add active class to clicked item
+  clickedItem.classList.add("active");
+  
+  // Remove active class after a short delay for visual feedback
+  setTimeout(() => {
+    clickedItem.classList.remove("active");
+  }, 300);
+}
+
+// Add click event listeners to menu items
+addEventOnElem(menuItems, "click", function() {
+  setActiveMenuItem(this);
+});
 
 
 
@@ -172,17 +193,17 @@ function showFormMessage(message, type) {
  */
 
 const toggleMenu = function() {
-  const navbar = document.querySelector("[data-navbar]");
+  const wrapper = document.querySelector(".wrapper");
   const overlay = document.querySelector("[data-overlay]");
-  const menuBtn = document.querySelector("[data-nav-toggler]");
+  const menuBtn = document.querySelector(".mobile-menu-btn");
   
-  navbar.classList.toggle("active");
+  wrapper.classList.toggle("active");
   overlay.classList.toggle("active");
   menuBtn.classList.toggle("active");
   document.body.classList.toggle("nav-active");
   
   // Prevent background scrolling when menu is open
-  if (navbar.classList.contains("active")) {
+  if (wrapper.classList.contains("active")) {
     document.body.style.overflow = "hidden";
   } else {
     document.body.style.overflow = "";
@@ -190,11 +211,208 @@ const toggleMenu = function() {
 }
 
 // Ensure all click events are properly set
-document.querySelector("[data-nav-toggler]").addEventListener("click", toggleMenu);
-document.querySelector("[data-overlay]").addEventListener("click", toggleMenu);
+const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
 
-// Close menu when clicking nav links
+if (mobileMenuBtn) {
+  mobileMenuBtn.addEventListener("click", toggleMenu);
+}
+
+if (overlay) {
+  overlay.addEventListener("click", toggleMenu);
+}
+
+// Close menu when clicking nav links (mobile only)
 const navLinks = document.querySelectorAll("[data-nav-link]");
 navLinks.forEach(link => {
-  link.addEventListener("click", toggleMenu);
+  link.addEventListener("click", function() {
+    // Only toggle menu on mobile
+    if (window.innerWidth <= 768) {
+      toggleMenu();
+    }
+  });
+});
+
+/**
+ * Internationalization (i18n) functionality
+ */
+
+// Language data
+const translations = {
+  en: {
+    nav: {
+      home: "Home",
+      services: "Services",
+      portfolio: "Portfolio",
+      features: "Features",
+      blog: "Blog",
+      contact: "Contact"
+    },
+    hero: {
+      title: "Building Digital Product, Brand and Experience",
+      subtitle: "At Devnexora we specialize in designing, building, shipping and scaling beautiful, usable products with blazing-fast efficiency",
+      howItWorks: "How It Works",
+      behindScenes: "Behind the scenes"
+    },
+    services: {
+      subtitle: "Our Services",
+      title: "Managing you business with our best service",
+      individuals: "Individuals",
+      companies: "Companies",
+      startups: "Startups",
+      website: "Website",
+      softwareSolutions: "Software Solutions",
+      mvp: "MVP",
+      forIndividualProfessionals: "For individual professionals",
+      forBusinesses: "For businesses and organizations",
+      forStartups: "For startups and new ventures"
+    },
+    features: {
+      subtitle: "Why Choose us",
+      title: "Specialist in aviding clients of financial challenges",
+      fastWorking: {
+        title: "Fast working process",
+        description: "At Devnexora, we specialize in designing, building, shipping, and scaling beautiful digital products — with speed and efficiency at every step."
+      },
+      dedicatedTeam: {
+        title: "Dedicated team",
+        description: "Our dedicated team delivers high-quality solutions by designing, building, shipping, and scaling exceptional products tailored to your needs."
+      },
+      support: {
+        title: "24/7 hours support",
+        description: "We provide around-the-clock support to ensure your projects run smoothly — from design and development to scaling and beyond."
+      },
+      whatsapp: {
+        title: "WhatsApp Support",
+        description: "Get instant support and quick responses through WhatsApp. Connect with our team directly for fast communication and project updates."
+      }
+    },
+    contact: {
+      subtitle: "Get In Touch",
+      title: "Let's work together",
+      emailUs: "Email Us",
+      whatsappUs: "WhatsApp Us",
+      callUs: "Call Us",
+      visitUs: "Visit Us",
+      sendMessage: "Send Message"
+    }
+  },
+  fr: {
+    nav: {
+      home: "Accueil",
+      services: "Services",
+      portfolio: "Portfolio",
+      features: "Fonctionnalités",
+      blog: "Blog",
+      contact: "Contact"
+    },
+    hero: {
+      title: "Création de produits digitaux, de marques et d’expériences",
+      subtitle: "Chez Devnexora, nous sommes spécialisés dans la conception, le développement, le déploiement et la mise à l’échelle de produits beaux, utilisables et efficaces à une vitesse fulgurante",
+      howItWorks: "Comment ça marche",
+      behindScenes: "Dans les coulisses"
+    },
+    services: {
+      subtitle: "Nos Services",
+      title: "Gérez votre activité grâce à nos meilleurs services",
+      individuals: "Individus",
+      companies: "Entreprises",
+      startups: "Startups",
+      website: "Site Web",
+      softwareSolutions: "Solutions logicielles",
+      mvp: "MVP",
+      forIndividualProfessionals: "Pour les professionnels indépendants",
+      forBusinesses: "Pour les entreprises et organisations",
+      forStartups: "Pour les startups et les nouveaux projets"
+    },
+    features: {
+      subtitle: "Pourquoi nous choisir",
+      title: "Spécialistes pour aider nos clients à éviter les défis financiers",
+      fastWorking: {
+        title: "Processus rapide",
+        description: "Chez Devnexora, nous concevons, développons, lançons et faisons évoluer de magnifiques produits numériques — avec rapidité et efficacité à chaque étape."
+      },
+      dedicatedTeam: {
+        title: "Équipe dédiée",
+        description: "Notre équipe dédiée livre des solutions de haute qualité en concevant, développant, lançant et faisant évoluer des produits exceptionnels adaptés à vos besoins."
+      },
+      support: {
+        title: "Support 24h/24 et 7j/7",
+        description: "Nous assurons un support continu pour garantir le bon déroulement de vos projets — de la conception au développement, jusqu’à la mise à l’échelle."
+      },
+      whatsapp: {
+        title: "Support WhatsApp",
+        description: "Recevez une assistance instantanée et des réponses rapides via WhatsApp. Communiquez directement avec notre équipe pour un suivi en temps réel de vos projets."
+      }
+    },
+    contact: {
+      subtitle: "Contactez-nous",
+      title: "Travaillons ensemble",
+      emailUs: "Envoyez-nous un e-mail",
+      whatsappUs: "Écrivez-nous sur WhatsApp",
+      callUs: "Appelez-nous",
+      visitUs: "Rendez-nous visite",
+      sendMessage: "Envoyer le message"
+    }
+  }
+  
+};
+
+// Current language
+let currentLang = 'en';
+
+// Function to update text content
+function updateTextContent() {
+  const elements = document.querySelectorAll('[data-i18n]');
+  elements.forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    const keys = key.split('.');
+    let value = translations[currentLang];
+    
+    for (const k of keys) {
+      value = value[k];
+    }
+    
+    if (value) {
+      element.textContent = value;
+    }
+  });
+}
+
+// Function to switch language
+function switchLanguage(lang) {
+  currentLang = lang;
+  
+  // Update active button
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+  
+  // Update text content
+  updateTextContent();
+  
+  // Save language preference
+  localStorage.setItem('preferred-language', lang);
+}
+
+// Initialize language switcher
+function initLanguageSwitcher() {
+  // Get saved language preference
+  const savedLang = localStorage.getItem('preferred-language') || 'en';
+  
+  // Set initial language
+  switchLanguage(savedLang);
+  
+  // Add event listeners to language buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const lang = this.getAttribute('data-lang');
+      switchLanguage(lang);
+    });
+  });
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initLanguageSwitcher();
 });
