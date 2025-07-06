@@ -1,6 +1,85 @@
 'use strict';
 
+/**
+ * Mobile detection and performance optimizations
+ */
+const isMobile = window.innerWidth <= 768;
+const isSmallMobile = window.innerWidth <= 480;
 
+// Reduce animation complexity on mobile
+if (isMobile) {
+  // Disable heavy animations on mobile
+  document.documentElement.style.setProperty('--transition-1', '0.15s ease');
+  document.documentElement.style.setProperty('--transition-2', '0.2s ease');
+  
+  // Hide SVG background on mobile for better performance
+  const svgBackground = document.querySelector('svg[preserveAspectRatio]');
+  if (svgBackground) {
+    svgBackground.style.display = 'none';
+  }
+  
+  // Optimize scroll performance on mobile
+  let ticking = false;
+  const originalScrollHandler = window.onscroll;
+  
+  window.onscroll = function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        if (originalScrollHandler) originalScrollHandler();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+  
+  // Reduce touch sensitivity for better performance
+  document.addEventListener('touchstart', function() {}, {passive: true});
+  document.addEventListener('touchmove', function() {}, {passive: true});
+}
+
+/**
+ * Splash Screen functionality
+ */
+
+const splashScreen = document.getElementById('splashScreen');
+
+const hideSplashScreen = function() {
+  if (splashScreen) {
+    // Add hidden class to trigger fade out animation
+    splashScreen.classList.add('hidden');
+    
+    // Show the main background when splash screen starts fading
+    const mainBackground = document.querySelector('.main-background');
+    if (mainBackground) {
+      mainBackground.style.opacity = '0';
+      mainBackground.style.transition = 'opacity 1.2s ease';
+      setTimeout(() => {
+        mainBackground.style.opacity = '1';
+      }, 100);
+    }
+    
+    // Remove splash screen from DOM after animation completes
+    setTimeout(() => {
+      splashScreen.remove();
+    }, 1200); // Match the CSS transition duration
+  }
+};
+
+// Hide splash screen after 4 seconds to allow users to see the beautiful animation
+setTimeout(hideSplashScreen, 4000);
+
+// Also hide splash screen on user interaction (click, scroll, keypress)
+const hideSplashOnInteraction = function() {
+  hideSplashScreen();
+  // Remove event listeners after first interaction
+  document.removeEventListener('click', hideSplashOnInteraction);
+  document.removeEventListener('scroll', hideSplashOnInteraction);
+  document.removeEventListener('keydown', hideSplashOnInteraction);
+};
+
+document.addEventListener('click', hideSplashOnInteraction);
+document.addEventListener('scroll', hideSplashOnInteraction);
+document.addEventListener('keydown', hideSplashOnInteraction);
 
 /**
  * add Event on elements
@@ -24,14 +103,15 @@ const addEventOnElem = function (elem, type, callback) {
 
 const wrapper = document.querySelector(".wrapper");
 const navbarLinks = document.querySelectorAll("[data-nav-link]");
-const overlay = document.querySelector("[data-overlay]");
 
 const closeNavbar = function () {
   wrapper.classList.remove("active");
-  overlay.classList.remove("active");
+  const overlay = document.querySelector("[data-overlay]");
+  if (overlay) overlay.classList.remove("active");
   const menuBtn = document.querySelector(".mobile-menu-btn");
   if (menuBtn) menuBtn.classList.remove("active");
   document.body.style.overflow = "";
+  document.body.classList.remove("nav-active");
 }
 
 // Close navbar on mobile when clicking links
@@ -210,26 +290,59 @@ const toggleMenu = function() {
   }
 }
 
-// Ensure all click events are properly set
+// Mobile menu button click handler
 const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
-
 if (mobileMenuBtn) {
-  mobileMenuBtn.addEventListener("click", toggleMenu);
+  mobileMenuBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleMenu();
+  });
 }
 
+// Overlay click handler
+const overlay = document.querySelector("[data-overlay]");
 if (overlay) {
-  overlay.addEventListener("click", toggleMenu);
+  overlay.addEventListener("click", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    closeNavbar();
+  });
 }
 
 // Close menu when clicking nav links (mobile only)
 const navLinks = document.querySelectorAll("[data-nav-link]");
 navLinks.forEach(link => {
   link.addEventListener("click", function() {
-    // Only toggle menu on mobile
+    // Only close menu on mobile
     if (window.innerWidth <= 768) {
-      toggleMenu();
+      closeNavbar();
     }
   });
+});
+
+// Close mobile menu when screen size changes to desktop
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 768) {
+    closeNavbar();
+  }
+});
+
+// Close mobile menu when clicking outside (on mobile)
+document.addEventListener('click', function(e) {
+  if (window.innerWidth <= 768) {
+    const wrapper = document.querySelector(".wrapper");
+    const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+    const overlay = document.querySelector("[data-overlay]");
+    
+    // If menu is open and click is outside menu, hamburger button, and overlay
+    if (wrapper && wrapper.classList.contains("active") && 
+        !wrapper.contains(e.target) && 
+        !mobileMenuBtn.contains(e.target) &&
+        !overlay.contains(e.target)) {
+      closeNavbar();
+    }
+  }
 });
 
 /**
@@ -306,8 +419,8 @@ const translations = {
       contact: "Contact"
     },
     hero: {
-      title: "Création de produits digitaux, de marques et d’expériences",
-      subtitle: "Chez Devnexora, nous sommes spécialisés dans la conception, le développement, le déploiement et la mise à l’échelle de produits beaux, utilisables et efficaces à une vitesse fulgurante",
+      title: "Création de produits digitaux, de marques et d'expériences",
+      subtitle: "Chez Devnexora, nous sommes spécialisés dans la conception, le développement, le déploiement et la mise à l'échelle de produits beaux, utilisables et efficaces à une vitesse fulgurante",
       howItWorks: "Comment ça marche",
       behindScenes: "Dans les coulisses"
     },
@@ -337,7 +450,7 @@ const translations = {
       },
       support: {
         title: "Support 24h/24 et 7j/7",
-        description: "Nous assurons un support continu pour garantir le bon déroulement de vos projets — de la conception au développement, jusqu’à la mise à l’échelle."
+        description: "Nous assurons un support continu pour garantir le bon déroulement de vos projets — de la conception au développement, jusqu'à la mise à l'échelle."
       },
       whatsapp: {
         title: "Support WhatsApp",
