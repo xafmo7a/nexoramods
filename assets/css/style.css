@@ -2940,11 +2940,13 @@ body {
     transform: none;
   }
   
-  /* Disable SVG background animations on mobile */
-  svg[preserveAspectRatio],
-  .desktop-only,
+  /* Optimize SVG background animations on mobile */
   .main-background {
-    display: none !important;
+    animation-duration: 30s !important; /* Slower animation for mobile */
+  }
+  
+  .main-background path {
+    animation-duration: 30s !important; /* Slower animation for mobile */
   }
   
   /* Reduce transition durations on mobile */
